@@ -1,0 +1,26 @@
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Home from '../pages/Home'
+import About from '../pages/About'
+import SignUp from '../pages/SignUp'
+import SignIn from '../pages/SignIn'
+import Profile from '../pages/Profile'
+import Properties from '../pages/Properties'
+
+function AppRoutes() {
+  return (
+    <div>
+        <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='/signin' element={<SignIn />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/properies' element={<Properties />} />
+        </Routes>
+
+   </div>
+  )
+}
+
+export default AppRoutes
