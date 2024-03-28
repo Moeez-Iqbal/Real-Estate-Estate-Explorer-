@@ -1,6 +1,6 @@
 import joi from "joi"
 
-const userValidator ={
+const userValidator = {
     create: (req, res, next) => {
         const schema = joi.object({
             username: joi.string().min(5).max(20).required(),

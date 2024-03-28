@@ -3,12 +3,14 @@ import Express, {json} from "express"
 import allRouter from "./router/index.js";
 import { connectDataBase } from "./db/config.js";
 import dataBaseInIt from "./db/init.js";
+import cors from "cors"
 
 
 const app = Express()
 connectDataBase();
 console.log(process.env, "DB_HOST");
 dataBaseInIt().then(() => console.log("DataBase is synced"));
+app.use(cors())
 app.use(json());
 app.use(allRouter);
 
