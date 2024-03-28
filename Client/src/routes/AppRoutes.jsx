@@ -12,14 +12,8 @@ import Footer from '../components/Footer'
 function AppRoutes() {
   return (
     <>
-      <Routes>
-        <Route path='/' element={<Header />} /> 
-        <Route path='/about' element={<Header />} />
-        <Route path='/signin' element={<Header />} />
-        <Route path='/profile' element={<Header />} />
-        <Route path='/properties' element={<Header />} />
-      </Routes>
-
+    
+       <Header/>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
@@ -28,7 +22,7 @@ function AppRoutes() {
         <Route path='/properties' element={<Properties />} />
         <Route path='/signup' element={<SignUp />} />
       </Routes>
-
+     <Footer />
     </>
   )
 }

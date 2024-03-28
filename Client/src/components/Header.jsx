@@ -6,8 +6,7 @@ import logo from "../assets/Logo.svg";
 function Header() {
   return (
     <>
-     <header className="font-sans bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg fixed w-full">
-
+      <header className="font-sans bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg fixed w-full z-50 top-0">
         <div className="flex justify-between items-center max-w-6xl mx-auto ">
           <NavLink to="/">
             <h1 className="text-sm sm:text-lg flex flex-wrap rounded-md">
@@ -31,7 +30,7 @@ function Header() {
           </div>
 
           <ul className="flex gap-2">
-            <NavLink  to="/">
+            <NavLink to="/">
               <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
                 Home
               </li>
@@ -50,9 +49,9 @@ function Header() {
             </NavLink>
 
             <NavLink to="/signup">
-            <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
-            SignIn    
-            </li>
+              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
+                SignIn
+              </li>
             </NavLink>
           </ul>
         </div>

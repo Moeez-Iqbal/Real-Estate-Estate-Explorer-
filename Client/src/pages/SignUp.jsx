@@ -45,7 +45,7 @@ function SignUp() {
 
       <div className="flex-grow flex flex-col justify-center p-6 md:p-12 bg-slate-300 shadow-lg ">
         <h1 className="text-3xl text-center md:text-left mb-7 text-black items-center">
-          Signup
+          SignUp
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <input
@@ -83,7 +83,7 @@ function SignUp() {
         </form>
         <div className="flex gap-3 mt-2 text-black text-justify ">
           <p className="">Do you have an account?</p>
-          <NavLink to="/signin" className="text-black hover:underline">
+          <NavLink to="/signin" className="bg-black text-white hover:bg-yellow-300 rounded-md p-1">
             SignIn
           </NavLink>
         </div>
