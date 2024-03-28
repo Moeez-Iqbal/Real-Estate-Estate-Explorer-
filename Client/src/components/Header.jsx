@@ -1,13 +1,13 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
-import { FaSignInAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/Logo.svg";
 
 function Header() {
   return (
     <>
-      <header className="font-sans bg-custom-2 shadow-lg">
+     <header className="font-sans bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg fixed w-full">
+
         <div className="flex justify-between items-center max-w-6xl mx-auto ">
           <NavLink to="/">
             <h1 className="text-sm sm:text-lg flex flex-wrap rounded-md">
@@ -32,27 +32,27 @@ function Header() {
 
           <ul className="flex gap-2">
             <NavLink  to="/">
-              <li className="hidden sm:inline text-black  hover:bg-custom-0 rounded-md p-4 bg-custom-1 shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
                 Home
               </li>
             </NavLink>
 
             <NavLink to="/properties">
-              <li className="hidden sm:inline text-black  hover:bg-custom-0 rounded-md p-4 bg-custom-1 shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
                 Property
               </li>
             </NavLink>
 
             <NavLink to="/about">
-              <li className="hidden sm:inline text-black  hover:bg-custom-0 rounded-md p-4 bg-custom-1 shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
                 About
               </li>
             </NavLink>
 
-            <NavLink to="/profile">
-              <li>
-                <FaSignInAlt className="text-slate text-3xl p-1 rounded-md hover:bg-custom-0" />
-              </li>
+            <NavLink to="/signup">
+            <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
+            SignIn    
+            </li>
             </NavLink>
           </ul>
         </div>
