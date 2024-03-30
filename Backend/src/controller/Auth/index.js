@@ -16,8 +16,8 @@ const authController = {
     });
 
     res.status(201).json({
-      message: "User is SignUp"
-    })
+      message: "User is signed up"
+    });
   },
 
   SignIn: async (req, res) => {
@@ -28,18 +28,17 @@ const authController = {
     });
 
     if (!user) {
-      return res.status(401).json({
-        message: "Invalid Crediential"
-      })
+      return res.status(404).json({
+        message: "User not found"
+      });
     }
 
-    const result = await bcrypt.compare(payload.password, user.password)
-    console.log("result", result);
+    const result = await bcrypt.compare(payload.password, user.password);
 
     if (!result) {
       return res.status(401).json({
-        message: "Invalid Crediential"
-      })
+        message: "Invalid credentials"
+      });
     }
 
     const token = jwt.sign({
@@ -47,19 +46,15 @@ const authController = {
       username: user.username,
       email: user.email
     },
-
       process.env.JWT_SECRET, {
       expiresIn: "50m"
     });
-    
+
     res.json({
-      message: "User Logged in",
+      message: "User logged in",
       token,
     });
-
   }
-
-
 }
 
-export default authController
+export default authController;
