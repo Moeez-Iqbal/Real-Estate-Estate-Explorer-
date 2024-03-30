@@ -33,18 +33,9 @@ function SignIn() {
       dispatch(signInSuccess(response.data)); 
       navigate('/');
     } catch (error) {
-      if (error.response) {
-        console.log("Request failed with status code", error.response.status);
-        console.log("Server response data", error.response.data);
-        dispatch(signInFailure(error.response.data.message));
-      } else if (error.request) {
-        console.log("Request made but no response received:", error.request);
-      } else {
-        console.log("Error during request setup:", error.message);
-      }
+      dispatch(signInFailure(error.response.data.message));
     }
   };
-  
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
