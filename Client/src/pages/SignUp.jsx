@@ -43,16 +43,17 @@ function SignUp() {
         style={{ backgroundImage: `url(${SignupImage})` }}
       ></div>
 
-      <div className="flex-grow flex flex-col justify-center p-6 md:p-12 bg-slate-300 shadow-lg ">
+      <div className="flex-grow flex flex-col justify-center p-6 md:p-12 bg-emerald-100 shadow-lg border-solid-black ">
         <h1 className="text-3xl text-center md:text-left mb-7 text-black items-center">
           SignUp
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <input
+          
             type="text"
             id="username"
             placeholder="Enter your Name"
-            className="border p-3 rounded-lg"
+            className=" p-3 rounded-lg "
             onChange={handleChange}
             value={formData.username}
           />
@@ -83,7 +84,7 @@ function SignUp() {
         </form>
         <div className="flex gap-3 mt-2 text-black text-justify ">
           <p className="">Do you have an account?</p>
-          <NavLink to="/signin" className="bg-black text-white hover:bg-yellow-300 rounded-md p-1">
+          <NavLink to="/signin" className="bg-black text-white hover:bg-gray-800 rounded-md p-1">
             SignIn
           </NavLink>
         </div>

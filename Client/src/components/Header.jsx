@@ -31,25 +31,25 @@ function Header() {
 
           <ul className="flex gap-2">
             <NavLink to="/">
-              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
                 Home
               </li>
             </NavLink>
 
             <NavLink to="/properties">
-              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
                 Property
               </li>
             </NavLink>
 
             <NavLink to="/about">
-              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
                 About
               </li>
             </NavLink>
 
             <NavLink to="/signup">
-              <li className="hidden sm:inline text-white  hover:bg-custom-2 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
                 SignIn
               </li>
             </NavLink>

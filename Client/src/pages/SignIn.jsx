@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import SignInImage from "../assets/SignIn.jpg";
-import { NavLink, useNavigate} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"; // Corrected import statement
 import axios from "axios";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -9,9 +11,11 @@ function SignIn() {
     password: "",
   });
 
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-   const navigate = useNavigate();
+  const error = useSelector(state => state.user.error); 
+  const loading = useSelector(state => state.user.loading); 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -22,18 +26,25 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const response = await axios.post(`http://localhost:3000/SignIn`, formData);
       console.log("SignIn Successfully", response.data);
       setFormData({ email: "", password: "" });
-      navigate('/')
+      dispatch(signInSuccess(response.data)); 
+      navigate('/');
     } catch (error) {
-      console.error("Error Signing Up Try again later", error);
-      setError("Error signing In. Please try again later.");
-    } finally {
-      setLoading(false);
+      if (error.response) {
+        console.log("Request failed with status code", error.response.status);
+        console.log("Server response data", error.response.data);
+        dispatch(signInFailure(error.response.data.message));
+      } else if (error.request) {
+        console.log("Request made but no response received:", error.request);
+      } else {
+        console.log("Error during request setup:", error.message);
+      }
     }
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -42,7 +53,7 @@ function SignIn() {
         style={{ backgroundImage: `url(${SignInImage})` }}
       ></div>
 
-      <div className="flex-grow flex flex-col justify-center p-6 md:p-12 bg-emerald-300 shadow-lg ">
+      <div className="flex-grow flex flex-col justify-center p-6 md:p-12 bg-emerald-100 shadow-lg ">
         <h1 className="text-3xl text-center md:text-left mb-7 text-black items-center">
           SignIn
         </h1>
@@ -75,8 +86,8 @@ function SignIn() {
           {error && <p className="text-red-500">{error}</p>}
         </form>
         <div className="flex gap-3 mt-2 text-black text-justify ">
-          <p className="">Dont have an account?</p>
-          <NavLink to="/signup" className="bg-black text-white hover:bg-yellow-300 rounded-md p-1">
+          <p className="">Don't have an account?</p>
+          <NavLink to="/signup" className="bg-black text-white hover:bg-gray-800 rounded-md p-1">
             SignUp
           </NavLink>
         </div>
