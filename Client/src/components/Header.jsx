@@ -6,7 +6,7 @@ import logo from "../assets/Logo.svg";
 function Header() {
   return (
     <>
-      <header className="font-sans bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg fixed w-full z-50 top-0">
+      <header className="font-sans bg-stone-400  fixed w-full z-50 top-0 border-y-2 border-black border-x-2 ">
         <div className="flex justify-between items-center max-w-6xl mx-auto ">
           <NavLink to="/">
             <h1 className="text-sm sm:text-lg flex flex-wrap rounded-md">
@@ -31,25 +31,25 @@ function Header() {
 
           <ul className="flex gap-2">
             <NavLink to="/">
-              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
                 Home
               </li>
             </NavLink>
 
             <NavLink to="/properties">
-              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
                 Property
               </li>
             </NavLink>
 
             <NavLink to="/about">
-              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
                 About
               </li>
             </NavLink>
 
             <NavLink to="/signup">
-              <li className="hidden sm:inline text-white  hover:bg-gray-800 rounded-md p-4 bg-black shadow-md">
+              <li className="hidden sm:inline text-white  hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
                 SignIn
               </li>
             </NavLink>

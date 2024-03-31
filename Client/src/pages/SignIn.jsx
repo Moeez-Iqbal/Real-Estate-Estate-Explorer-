@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"; // Corrected import statement
 import axios from "axios";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -44,9 +45,9 @@ function SignIn() {
         style={{ backgroundImage: `url(${SignInImage})` }}
       ></div>
 
-      <div className="flex-grow flex flex-col justify-center p-6 md:p-12 bg-emerald-100 shadow-lg ">
-        <h1 className="text-3xl text-center md:text-left mb-7 text-black items-center">
-          SignIn
+      <div className="flex-grow flex flex-col justify-center p-6 md:p-12 shadow-lg bg-emerald-300 mt-14 text-center border-l border-r border-t border-black">
+        <h1 className="text-3xl text-center md:text-left mb-7 text-black items-center ">
+          <span className="ml-56 text-black border-x-2 border-y-2 p-2 rounded-md border-black hover:bg-gray-500">SignIn</span>
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <input
@@ -70,15 +71,16 @@ function SignIn() {
           <button
             disabled={loading}
             type="submit"
-            className="bg-black p-4 rounded-lg gap-2 text-white hover:bg-gray-900"
+            className="bg-black p-4 rounded-lg gap-2 text-white hover:bg-gray-600"
           >
             {loading ? `Loading...` : `SignIn`}
           </button>
           {error && <p className="text-red-500">{error}</p>}
+          <OAuth />
         </form>
-        <div className="flex gap-3 mt-2 text-black text-justify ">
+        <div className="flex gap-3 flex-col text-black text-center mt-10">
           <p className="">Don't have an account?</p>
-          <NavLink to="/signup" className="bg-black text-white hover:bg-gray-800 rounded-md p-1">
+          <NavLink to="/signup" className="bg-black text-white hover:bg-gray-800 rounded-md p-3 mx-56">
             SignUp
           </NavLink>
         </div>

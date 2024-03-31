@@ -54,7 +54,34 @@ const authController = {
       message: "User logged in",
       token,
     });
+  },
+
+  GoogleSignIn: async (req, res) => {
+    try {
+      const { email, imageurl } = req.body;
+
+      let user = await UserModel.findOne({ where: { email } });
+
+      if (!user) {
+        user = await UserModel.create({ email, avatar: imageurl });
+      }
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" } 
+      );
+
+      res.json({ token });
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      res.status(500).json({ message: "Google sign-in failed" });
+    }
+  },
+     
   }
-}
 
 export default authController;
