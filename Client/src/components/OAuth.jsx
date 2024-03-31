@@ -4,18 +4,18 @@ import { app } from "../firebase";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function OAuth() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
 
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
 
       const res = await axios.post(
         "http://localhost:3000/google",
@@ -30,8 +30,14 @@ function OAuth() {
         }
       );
 
-      dispatch(signInSuccess(res.data));
-      navigate('/')
+      dispatch(
+        signInSuccess({
+          token: res.data.token,
+          avatar: result.user.photoURL,
+        })
+      );
+
+      navigate("/");
     } catch (error) {
       console.log("Not able to SignIn with Google", error);
     }
