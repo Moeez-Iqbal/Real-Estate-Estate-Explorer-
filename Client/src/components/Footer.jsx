@@ -48,7 +48,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                 <a
-                                        href="https://linkedin.com/Moeez-Iqbal"
+                                        href="https://linkedin.com/moeez-iqbal"
                                         className="hover:bg-gray-700 p-3 rounded-md"
                                         target="_blank"
                                         rel="noreferrer"
