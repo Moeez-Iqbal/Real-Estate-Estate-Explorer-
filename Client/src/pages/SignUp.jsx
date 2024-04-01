@@ -28,7 +28,7 @@ function SignUp() {
       const response = await axios.post(`http://localhost:3000/SignUp`, formData);
       console.log("SignUp Successfully", response.data);
       setFormData({ username: "", email: "", password: "" });
-      navigate('/signin')
+      navigate('/sign-in')
     } catch (error) {
       console.error("Error Signing Up Try again later", error);
       setError("Error signing up. Please try again later.");
@@ -86,7 +86,7 @@ function SignUp() {
         </form>
         <div className="flex gap-3 flex-col text-black text-center mt-10 ">
           <p className="">Do you have an account?</p>
-          <NavLink to="/signin" className="bg-black text-white hover:bg-gray-800 rounded-md p-3 mx-56">
+          <NavLink to="/sign-in" className="bg-black text-white hover:bg-gray-800 rounded-md p-3 mx-56">
             SignIn
           </NavLink>
         </div>

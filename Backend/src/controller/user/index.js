@@ -39,7 +39,33 @@ const userController = {
                 message: "Error updating user"
             });
         }
+    },
+
+    getUser: async (req, res) => {
+        try {
+            const params = req.params;
+            
+            const user = await UserModel.findByPk(params.userId); 
+
+            
+            if (!user) {
+                return res.status(404).json({
+                    message: "User not found"
+                });
+            }
+
+            
+            res.json({
+                user
+            });
+        } catch (error) {
+            console.error("Error fetching user data", error);
+            res.status(500).json({
+                message: "Internal server error"
+            });
+        }
     }
+
 };
 
 export default userController;

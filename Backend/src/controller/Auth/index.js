@@ -53,11 +53,18 @@ const authController = {
     res.json({
       message: "User logged in",
       token,
+      user: { 
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar
+      }
     });
   },
 
   GoogleSignIn: async (req, res) => {
     try {
+      console.log(req.body);
       const { email, imageurl } = req.body;
   
       let user = await UserModel.findOne({ where: { email } });
@@ -77,8 +84,17 @@ const authController = {
         { expiresIn: "1h" }
       );
   
-      res.json({ token, avatar: user.avatar });
-    } catch (error) {
+      res.json({ token, 
+        avatar: user.avatar,
+        user: { 
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
+       });
+        
+      }
+      catch (error) {
       console.error("Google sign-in error:", error);
       res.status(500).json({ message: "Google sign-in failed" });
     }

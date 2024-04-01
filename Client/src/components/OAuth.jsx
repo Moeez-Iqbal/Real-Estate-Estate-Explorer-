@@ -14,12 +14,13 @@ function OAuth() {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
-
+  
       const result = await signInWithPopup(auth, provider);
-
+  
       const res = await axios.post(
         "http://localhost:3000/google",
         {
+          username: result.user.displayName,
           email: result.user.email,
           imageurl: result.user.photoURL,
         },
@@ -29,14 +30,15 @@ function OAuth() {
           },
         }
       );
-
+  
       dispatch(
         signInSuccess({
           token: res.data.token,
           avatar: result.user.photoURL,
+          user: res.data.user, 
         })
       );
-
+  
       navigate("/");
     } catch (error) {
       console.log("Not able to SignIn with Google", error);

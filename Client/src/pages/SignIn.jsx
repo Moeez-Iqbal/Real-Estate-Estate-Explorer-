@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SignInImage from "../assets/SignIn.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux"; // Corrected import statement
+import { useDispatch, useSelector } from "react-redux"; 
 import axios from "axios";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 import OAuth from "../components/OAuth";
@@ -32,7 +32,7 @@ function SignIn() {
       console.log("SignIn Successfully", response.data);
       setFormData({ email: "", password: "" });
       dispatch(signInSuccess(response.data)); 
-      navigate('/');
+      navigate('/Profile');
     } catch (error) {
       dispatch(signInFailure(error.response.data.message));
     }
@@ -80,7 +80,7 @@ function SignIn() {
         </form>
         <div className="flex gap-3 flex-col text-black text-center mt-10">
           <p className="">Don't have an account?</p>
-          <NavLink to="/signup" className="bg-black text-white hover:bg-gray-800 rounded-md p-3 mx-56">
+          <NavLink to="/sign-up" className="bg-black text-white hover:bg-gray-800 rounded-md p-3 mx-56">
             SignUp
           </NavLink>
         </div>

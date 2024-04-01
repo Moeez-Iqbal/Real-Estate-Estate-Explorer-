@@ -43,16 +43,19 @@ function Header() {
               About
             </li>
           </NavLink>
-          <NavLink to="/profile">
-          {currentUser ? (
-            <img className="rounded-full h-8 w-8 object-cover" src={currentUser.avatar} alt="profile" />
-          ) : (
-            
+          <NavLink to={currentUser ? "/profile" : "/sign-in"}>
+            {currentUser ? (
+              <img
+                className="rounded-full h-8 w-8 object-cover"
+                src={currentUser.user.avatar}
+                alt="profile"
+              />
+            ) : (
               <li className="hidden sm:inline text-white hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
                 SignIn
               </li>
             )}
-            </NavLink>
+          </NavLink>
         </ul>
       </div>
     </header>
