@@ -65,12 +65,12 @@ const authController = {
   GoogleSignIn: async (req, res) => {
     try {
       console.log(req.body);
-      const { email, imageurl } = req.body;
+      const {username, email, imageurl } = req.body;
   
       let user = await UserModel.findOne({ where: { email } });
   
       if (!user) {
-        user = await UserModel.create({ email, avatar: imageurl });
+        user = await UserModel.create({ username, email, avatar: imageurl });
       } else if (!user.avatar) {
         await user.update({ avatar: imageurl });
       }
@@ -85,11 +85,11 @@ const authController = {
       );
   
       res.json({ token, 
-        avatar: user.avatar,
         user: { 
           id: user.id,
           username: user.username,
-          email: user.email
+          email: user.email,
+          avatar: user.avatar
         }
        });
         

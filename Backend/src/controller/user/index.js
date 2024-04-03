@@ -40,32 +40,38 @@ const userController = {
             });
         }
     },
+    
+    deleteAccount: async(req, res) => {
 
-    getUser: async (req, res) => {
         try {
             const params = req.params;
-            
-            const user = await UserModel.findByPk(params.userId); 
 
-            
-            if (!user) {
-                return res.status(404).json({
-                    message: "User not found"
-                });
-            }
+        const user = await UserModel.findByPk(params.userId)
+         
+        if(!user){
+           return res.status(404).json({
+                message: "User not Found",
+            })
+        }
 
+        await user.destroy();
+
+        return res.json({
+            message: "User deleted Successfully",
+        
+        })
             
-            res.json({
-                user
-            });
         } catch (error) {
-            console.error("Error fetching user data", error);
-            res.status(500).json({
-                message: "Internal server error"
-            });
+            console.error("Error Deleting User", error);
+            return res.status(500).json({
+                message: "Internal Server Error"
+            })
+            
         }
     }
+    
 
 };
+
 
 export default userController;
