@@ -8,17 +8,13 @@ function Header() {
   const currentUser = useSelector((state) => state.user.currentUser);
 
   return (
-    <header className="font-sans bg-stone-400  fixed w-full z-50 top-0 border-y-2 border-black border-x-2 ">
-      <div className="flex justify-between items-center max-w-6xl mx-auto ">
-        <NavLink to="/">
-          <h1 className="text-sm sm:text-lg flex flex-wrap rounded-md">
-            <span>
-              <img className="w-40 " src={logo} alt="Logo" />
-            </span>
-          </h1>
+    <header className="bg-gradient-to-r from-violet-600 to-indigo-600 w-full">
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <NavLink to="/" className="flex items-center">
+          <img className="w-40" src={logo} alt="Logo" />
         </NavLink>
 
-        <div className="flex items-center flex-grow justify-center">
+        <div className="flex-grow flex items-center justify-center">
           <form className="bg-slate-100 p-2 rounded-lg flex items-center shadow-md w-full max-w-sm">
             <input
               type="text"
@@ -32,30 +28,31 @@ function Header() {
         </div>
 
         <ul className="flex gap-2">
-          <NavLink to="/">
-            <li className="hidden sm:inline text-white  hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
-              Home
-            </li>
+          <NavLink to="/" className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">
+            Home
           </NavLink>
 
-          <NavLink to="/about">
-            <li className="hidden sm:inline text-white  hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
-              About
-            </li>
+          <NavLink to="/about" className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">
+            About
           </NavLink>
-          <NavLink to={currentUser ? "/profile" : "/sign-in"}>
-            {currentUser ? (
-              <img
-                className="rounded-full h-8 w-8 object-cover"
-                src={currentUser.user.avatar}
-                alt="profile"
-              />
-            ) : (
-              <li className="hidden sm:inline text-white hover:bg-gray-500 rounded-md p-4 bg-black shadow-md">
-                SignIn
-              </li>
-            )}
-          </NavLink>
+
+           {currentUser? (
+            <NavLink to="/profile">
+              {currentUser.user.avatar ? (
+                <img
+                  className="rounded-full h-8 w-8 object-cover mt-3"
+                  src={currentUser.user.avatar}
+                  alt="profile"
+                />
+              ) : (
+                <li className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">Profile</li>
+              )}
+            </NavLink>
+          ) : ( 
+             <NavLink to="/sign-in" className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">
+              SignIn
+            </NavLink>
+          )}
         </ul>
       </div>
     </header>
