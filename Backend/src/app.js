@@ -12,6 +12,7 @@ console.log(process.env, "DB_HOST");
 dataBaseInIt().then(() => console.log("DataBase is synced"));
 app.use(cors())
 app.use(json());
+
 app.use(allRouter);
 
 

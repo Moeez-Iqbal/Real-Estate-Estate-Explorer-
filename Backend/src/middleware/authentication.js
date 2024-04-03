@@ -1,4 +1,4 @@
-import { jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const authenticateMiddleware = async(req, res, next) => {
     const headers = req.headers;

@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, 
+  deleteUserStart, deleteUserSuccess, deleteUserFailure,
+signOutStart, signOutSuccess, signOutFailure} from '../redux/user/userSlice';
 import axios from 'axios';
 
 function Profile() {
@@ -80,7 +82,32 @@ function Profile() {
     } catch (error) {
       dispatch(deleteUserFailure(error.message))
     }
-  }
+  };
+
+  const handleSignOut = async () => {
+    try {
+        dispatch(signOutStart());
+        const authToken = 'Bearer your-placeholder-token';
+        const config = {
+            headers: {
+                Authorization: authToken
+            }
+        };
+        const res = await axios.post(`http://localhost:3000/signout`, null, config);
+
+        if (res.data.success === false) {
+            dispatch(signOutFailure(res.data.message));
+            return;
+        }
+
+        document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+        dispatch(signOutSuccess());
+    } catch (error) {
+        dispatch(signOutFailure(error.message));
+    }
+};
+
 
   return (
     <div className='p-3 max-w-md mt-16 mx-auto mb-12 border-x-2 border-y-2 border-black shadow-lg rounded-md bg-gray-300'>
@@ -143,7 +170,7 @@ function Profile() {
         <div className='bg-blue-700 text-white rounded-lg p-3 cursor-pointer hover:bg-gray-700 ' onClick={handleDelete}>
           Delete account
         </div>
-        <div className='bg-yellow-500 text-white rounded-lg p-3 cursor-pointer hover:bg-gray-700'>
+        <div className='bg-yellow-500 text-white rounded-lg p-3 cursor-pointer hover:bg-gray-700' onClick={handleSignOut}>
           Sign out
         </div>
       </div>
