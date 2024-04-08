@@ -7,6 +7,10 @@ import { updateUserStart, updateUserSuccess, updateUserFailure,
   deleteUserStart, deleteUserSuccess, deleteUserFailure,
 signOutStart, signOutSuccess, signOutFailure} from '../redux/user/userSlice';
 import axios from 'axios';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { NavLink } from 'react-router-dom';
+
 
 function Profile() {
   const currentUser = useSelector(state => state.user.currentUser);
@@ -14,7 +18,7 @@ function Profile() {
   const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({}); // Define formData here
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,17 +50,13 @@ function Profile() {
     );
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       dispatch(updateUserStart());
+      const updatedValues = { ...values, ...formData };
       const res = await axios.put(
         `http://localhost:3000/update/${currentUser.user.id}`,
-        formData,
+        updatedValues,
         {
           headers: {
             "Content-Type": "application/json",
@@ -66,9 +66,10 @@ function Profile() {
       dispatch(updateUserSuccess(res.data));
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+    } finally {
+      setSubmitting(false);
     }
   };
-
 
   const handleDelete = async () => {
     try {
@@ -86,86 +87,104 @@ function Profile() {
 
   const handleSignOut = async () => {
     try {
-        dispatch(signOutStart());
-        const authToken = 'Bearer your-placeholder-token';
-        const config = {
-            headers: {
-                Authorization: authToken
-            }
-        };
-        const res = await axios.post(`http://localhost:3000/signout`, null, config);
-
-        if (res.data.success === false) {
-            dispatch(signOutFailure(res.data.message));
-            return;
-        }
-
-        document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-        dispatch(signOutSuccess());
+      dispatch(signOutStart());
+  
+      const res = await axios.post('http://localhost:3000/signout');
+  
+      if (res.data.success === false) {
+        dispatch(signOutFailure(res.data.message));
+        return;
+      }
+  
+      dispatch(signOutSuccess());
     } catch (error) {
-        dispatch(signOutFailure(error.message));
+      dispatch(signOutFailure(error.message));
     }
-};
-
+  };
 
   return (
     <div className='p-3 max-w-md mt-16 mx-auto mb-12 border-x-2 border-y-2 border-black shadow-lg rounded-md bg-gray-300'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <input
-          type='file'
-          onChange={(e) => e.target.files && setFile(e.target.files[0])}
-          ref={fileRef}
-          hidden
-          accept='image/*'
-        />
-        <img
-          src={formData.avatar || currentUser.user.avatar || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
-          alt="Avatar"
-          onClick={() => fileRef.current.click()}
-          className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
-        />
-        <p className='text-center'>
-          {fileUploadError ? (
-            <span className='text-red-700'>
-              Error Image upload (image must be less than 2 mb)
-            </span>
-          ) : filePerc > 0 && filePerc < 100 ? (
-            <span className='text-slate-700 text-center'>{`Uploading ${filePerc}%`}</span>
-          ) : filePerc === 100 ? (
-            <span className='text-green-700 text-center'>Image successfully uploaded!</span>
-          ) : (
-            ''
-          )}
-        </p>
-        <input
-          type='text'
-          placeholder='username'
-          id='username'
-          defaultValue={currentUser.user.username}
-          onChange={handleChange}
-          className='border p-3 rounded-lg'
-        />
-        <input
-          type='email'
-          placeholder='email'
-          id='email'
-          defaultValue={currentUser.user.email}
-          onChange={handleChange}
-          className='border p-3 rounded-lg'
-        />
-        <input
-          type='password'
-          placeholder='password'
-          id='password'
-          onChange={handleChange}
-          className='border p-3 rounded-lg'
-        />
-        <button className='bg-red-700 text-white rounded-lg p-3 uppercase hover:bg-gray-700'>
-          update
-        </button>
-      </form>
+      <Formik
+        initialValues={{
+          username: currentUser.user.username || '',
+          email: currentUser.user.email || '',
+          password: '',
+        }}
+        validationSchema={Yup.object().shape({
+          username: Yup.string().required('Username is required'),
+          email: Yup.string().email('Invalid email').required('Email is required'),
+          password: Yup.string().min(6, 'Password must be at least 6 characters long'),
+        })}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form className='flex flex-col gap-4'>
+            <input
+              type='file'
+              onChange={(e) => e.target.files && setFile(e.target.files[0])}
+              ref={fileRef}
+              hidden
+              accept='image/*'
+            />
+            <img
+              src={formData.avatar || currentUser.user.avatar || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
+              alt="Avatar"
+              onClick={() => fileRef.current.click()}
+              className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
+            />
+            <p className='text-center'>
+              {fileUploadError ? (
+                <span className='text-red-700'>
+                  Error Image upload (image must be less than 2 mb)
+                </span>
+              ) : filePerc > 0 && filePerc < 100 ? (
+                <span className='text-slate-700 text-center'>{`Uploading ${filePerc}%`}</span>
+              ) : filePerc === 100 ? (
+                <span className='text-green-700 text-center'>Image successfully uploaded!</span>
+              ) : (
+                ''
+              )}
+            </p>
+            <Field
+              type='text'
+              placeholder='username'
+              id='username'
+              name='username'
+              className='border p-3 rounded-lg'
+            />
+            <ErrorMessage name='username' component='p' className='text-red-500' />
+
+            <Field
+              type='email'
+              placeholder='email'
+              id='email'
+              name='email'
+              className='border p-3 rounded-lg'
+            />
+            <ErrorMessage name='email' component='p' className='text-red-500' />
+
+            <Field
+              type='password'
+              placeholder='password'
+              id='password'
+              name='password'
+              className='border p-3 rounded-lg'
+            />
+            <ErrorMessage name='password' component='p' className='text-red-500' />
+
+            <button type='submit' className='bg-red-700 text-white rounded-lg p-3 uppercase hover:bg-gray-700' disabled={isSubmitting}>
+              {isSubmitting ? 'Updating...' : 'Update'}
+            </button>
+          </Form>
+        )}
+      </Formik>
+ 
+      <div className='flex flex-col justify-between mt-5 gap-4 text-center'>
+      <NavLink className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95'
+          to={'/add-property'}>Add Property</NavLink>
+        </div>
+
       <div className='flex flex-col justify-between mt-5 gap-4 text-center'>
         <div className='bg-blue-700 text-white rounded-lg p-3 cursor-pointer hover:bg-gray-700 ' onClick={handleDelete}>
           Delete account

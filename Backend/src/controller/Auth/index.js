@@ -107,21 +107,18 @@ const authController = {
     }
   },
 
-  signOut : (req, res) => {
-    try {
-        res.clearCookie('authToken');
-        res.json({
-            success: true,
-            message: "User SignOut Successfully"
-        });
-    } catch (error) {
-        console.error("Error SigningOut", error);
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        });
-    }
+   signOut : (req, res) => {
+    req.session.destroy(error => {
+
+      if (error) {
+        console.error('Error destroying session:', error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+      }
+      
+      res.clearCookie('session-id'); 
+      res.json({ success: true, message: 'User signed out successfully' });
+    });
   }
-};
+}
 
 export default authController;

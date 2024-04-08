@@ -8,6 +8,7 @@ import Profile from '../pages/Profile'
 import PrivateRoute from '../components/PrivateRoute';
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import AddProperty from '../pages/AddProperty'
 
 function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ function AppRoutes() {
         <Route path='/about' element={<About />} />
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />} />
+          <Route path='/add-property' element={<AddProperty />} />
         </Route>
       </Routes>
      <Footer />

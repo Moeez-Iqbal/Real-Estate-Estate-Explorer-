@@ -36,23 +36,24 @@ function Header() {
             About
           </NavLink>
 
-           {currentUser? (
-            <NavLink to="/profile">
-              {currentUser.user.avatar ? (
-                <img
-                  className="rounded-full h-8 w-8 object-cover mt-3"
-                  src={currentUser.user.avatar}
-                  alt="profile"
-                />
-              ) : (
-                <li className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">Profile</li>
-              )}
-            </NavLink>
-          ) : ( 
-             <NavLink to="/sign-in" className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">
-              SignIn
-            </NavLink>
-          )}
+          {currentUser ? (
+  <NavLink to="/profile">
+    {currentUser.user.avatar ? (
+      <img
+        className="rounded-full h-8 w-8 object-cover mt-3"
+        src={currentUser.user.avatar}
+        alt="profile"
+      />
+    ) : (
+      <li className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">Profile</li>
+    )}
+  </NavLink>
+) : ( 
+  <NavLink to="/sign-in" className="text-white hover:bg-gray-500 rounded-md p-4 sm:inline">
+    SignIn
+  </NavLink>
+)}
+
         </ul>
       </div>
     </header>
