@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 
 function AddProperty() {
+  const [files, setFiles] = useState([]);
+  const [imageUploadError, setImageUploadError] = useState(false);
+  const [uploading, setUploading] = useState(false)
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+  });
+
   const initialValues = {
     name: "",
     description: "",
@@ -23,7 +37,78 @@ function AddProperty() {
     address: Yup.string().required("Addressis Required"),
   });
 
-  const handleSubmit = () => {};
+  const handleSubmit =() => {
+    
+  }
+
+  const handleImageSubmit = (e) => {
+    if (files.length === 0) {
+      setImageUploadError("Please select at least one image.");
+      return;
+    }
+  
+    if (files.length + formData.imageUrls.length >= 7) {
+      setImageUploadError("You can upload a maximum of 6 images per listing.");
+      return;
+    }
+  
+    setUploading(true);
+    setImageUploadError(false);
+  
+    const promises = [];
+    for (let i = 0; i < files.length; i++) {
+      promises.push(storeImage(files[i]));
+    }
+  
+    Promise.all(promises)
+      .then((urls) => {
+        setFormData({
+          ...formData,
+          imageUrls: formData.imageUrls.concat(urls),
+        });
+        setImageUploadError(false);
+        setUploading(false); 
+      })
+      .catch((error) => {
+        setImageUploadError("Image Upload Failed max(3mb)");
+        setUploading(false); 
+      });
+  };
+  
+
+  const storeImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
+
+
+  const handleRemoveImage = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    });
+  };
 
   return (
     <main className="p-3 max-w-4xl mx-auto bg-gray-200 rounded-lg my-4">
@@ -189,7 +274,7 @@ function AddProperty() {
 
             <div className="flex flex-col flex-1 gap-4 ">
               <p className=" font-semibold">
-                Images:{" "}
+                Images:{"  "}
                 <span className="font-normal">You can upload max 6 Images</span>
               </p>
 
@@ -200,18 +285,26 @@ function AddProperty() {
                   multiple
                   accept="image/*"
                   className="p-3 border border-gray-300 rounded w-full"
-                  onChange={(event) => {
-                    setFieldValue(
-                      "images",
-                      Array.from(event.currentTarget.files)
-                    );
-                  }}
+                  onChange={(e) => setFiles(e.target.files)}
                 />
-                <button className="p-3 bg-blue-600 rounded-lg uppercase hover:bg-yellow-500 text-white ">
-                  Upload
+                <button
+                  type="button"
+                  onClick={handleImageSubmit}
+                  className="p-3 bg-blue-600 rounded-lg uppercase hover:bg-yellow-500 text-white "
+                >
+                  {uploading ? 'Uploading...' : 'Upload'}
                 </button>
               </div>
-
+              <p className="text-red-600 text-sm">
+                {imageUploadError && imageUploadError}
+              </p>
+              {formData.imageUrls.length > 0 &&
+                formData.imageUrls.map((url, index) => (
+                  <div key={url} className="flex justify-between p-3 border items-center">
+                    <img src={url} alt="Listing Image" className="w-20 h-20 object-contain rounded-lg" />
+                    <button type="button" onClick={() =>handleRemoveImage(index)} className="p-3 bg-red-500 text-white hover:bg-gray-600 rounded-lg uppercase">Delete</button>
+                  </div>
+                ))}
               <button className="p-3 bg-black text-white rounded-lg uppercase hover:bg-slate-700">
                 Add Property
               </button>
