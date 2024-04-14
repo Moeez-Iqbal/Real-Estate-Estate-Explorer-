@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -8,58 +8,71 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 function AddProperty() {
   const [files, setFiles] = useState([]);
   const [imageUploadError, setImageUploadError] = useState(false);
-  const [uploading, setUploading] = useState(false)
-  const [formData, setFormData] = useState({
-    imageUrls: [],
-  });
+  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const navigate = useNavigate();
 
   const initialValues = {
     name: "",
     description: "",
     address: "",
     type: "rent",
-    bathrooms: 0,
-    bedrooms: 0,
-    regularPrice: 0,
-    discountPrice: 0,
+    bathrooms: 1,
+    bedrooms: 1,
+    regularPrice: 50,
+    discountPrice: 50,
     offer: false,
     parking: false,
     furnished: false,
+    imageUrls: [],
   };
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is Required"),
-    description: Yup.string().required("Description is Required"),
-    address: Yup.string().required("Addressis Required"),
-  });
+  // const validationSchema = Yup.object().shape({
+  //   name: Yup.string()
+  //     .required("Name is required")
+  //     .min(5, "Name must be at least 5 characters")
+  //     .max(20, "Name must be at most 20 characters"),
+  //   description: Yup.string()
+  //     .required("Description is required")
+  //     .min(10, "Description must be at least 10 characters")
+  //     .max(100, "Description must be at most 100 characters"),
+  //   address: Yup.string()
+  //     .required("Address is required")
+  //     .min(10, "Address must be at least 10 characters")
+  //     .max(100, "Address must be at most 100 characters"),
+  // });
 
-  const handleSubmit =() => {
-    
-  }
+  const [formData, setFormData] = useState(initialValues);
+  console.log(formData);
 
   const handleImageSubmit = (e) => {
     if (files.length === 0) {
       setImageUploadError("Please select at least one image.");
       return;
     }
-  
+
     if (files.length + formData.imageUrls.length >= 7) {
       setImageUploadError("You can upload a maximum of 6 images per listing.");
       return;
     }
-  
+
     setUploading(true);
     setImageUploadError(false);
-  
+
     const promises = [];
     for (let i = 0; i < files.length; i++) {
       promises.push(storeImage(files[i]));
     }
-  
+
     Promise.all(promises)
       .then((urls) => {
         setFormData({
@@ -67,14 +80,13 @@ function AddProperty() {
           imageUrls: formData.imageUrls.concat(urls),
         });
         setImageUploadError(false);
-        setUploading(false); 
+        setUploading(false);
       })
       .catch((error) => {
         setImageUploadError("Image Upload Failed max(3mb)");
-        setUploading(false); 
+        setUploading(false);
       });
   };
-  
 
   const storeImage = async (file) => {
     return new Promise((resolve, reject) => {
@@ -102,12 +114,66 @@ function AddProperty() {
     });
   };
 
-
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
+  };
+
+  const handleChange = (e) => {
+    if (e.target.id === "sale" || e.target.id === "rent") {
+      setFormData({
+        ...formData,
+        type: e.target.id,
+      });
+    }
+
+    if (
+      e.target.id === "parking" ||
+      e.target.id === "furnished" ||
+      e.target.id === "offer"
+    ) {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.checked,
+      });
+    }
+
+    if (
+      e.target.type === "number" ||
+      e.target.type === "text" ||
+      e.target.type === "textarea"
+    ) {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/list", {
+        ...formData,
+        userRef: currentUser.user.id, // Assuming currentUser is an object containing id
+      });
+
+      setLoading(false);
+
+      if (response.data.success === false) {
+        console.error("Error creating listing:", response.data.message);
+        console.log(response.data);
+      } else {
+        console.log("Listing created:", response.data);
+        // Navigate to the newly created listing
+        navigate(`/listing/${response.data.id}`);
+      }   
+    } catch (error) {
+      console.error("Error creating listing:", error.message);
+      
+      setLoading(false);
+    }
   };
 
   return (
@@ -116,8 +182,8 @@ function AddProperty() {
         Add Property Details
       </h1>
       <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
+        initialValues={formData}
+        // validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
@@ -128,6 +194,9 @@ function AddProperty() {
                 placeholder="Name"
                 className="border p-3 rounded-lg"
                 name="name"
+                id="name"
+                onChange={handleChange}
+                value={formData.name}
               />
               <ErrorMessage
                 name="name"
@@ -140,6 +209,9 @@ function AddProperty() {
                 placeholder="Description"
                 className="border p-3 rounded-lg"
                 name="description"
+                id="description"
+                onChange={handleChange}
+                value={formData.description}
               />
               <ErrorMessage
                 name="description"
@@ -149,12 +221,15 @@ function AddProperty() {
 
               <Field
                 type="text"
-                placeholder="Address"
+                placeholder="address"
                 className="border p-3 rounded-lg"
                 name="address"
+                id="address"
+                onChange={handleChange}
+                value={formData.address}
               />
               <ErrorMessage
-                name="name"
+                name="address"
                 component="p"
                 className="text-red-700 text-sm"
               />
@@ -166,6 +241,8 @@ function AddProperty() {
                     id="sale"
                     name="sale"
                     className="checkbox w-5"
+                    onChange={handleChange}
+                    checked={formData.type === "sale"}
                   />
                   <label htmlFor="sale">Sell</label>
                 </div>
@@ -176,6 +253,8 @@ function AddProperty() {
                     id="rent"
                     name="rent"
                     className="checkbox w-5"
+                    onChange={handleChange}
+                    checked={formData.type === "rent"}
                   />
                   <label htmlFor="rent">Rent</label>
                 </div>
@@ -186,6 +265,8 @@ function AddProperty() {
                     id="parking"
                     name="parking"
                     className="checkbox w-5"
+                    onChange={handleChange}
+                    checked={formData.parking}
                   />
                   <label htmlFor="parking">Parking Spot</label>
                 </div>
@@ -196,6 +277,8 @@ function AddProperty() {
                     id="furnished"
                     name="furnished"
                     className="checkbox w-5"
+                    onChange={handleChange}
+                    checked={formData.furnished}
                   />
                   <label htmlFor="furnished">Furnished</label>
                 </div>
@@ -206,6 +289,8 @@ function AddProperty() {
                     id="offer"
                     name="offer"
                     className="checkbox w-5"
+                    onChange={handleChange}
+                    checked={formData.offer}
                   />
                   <label htmlFor="offer">Offer</label>
                 </div>
@@ -221,6 +306,8 @@ function AddProperty() {
                     max="10"
                     placeholder="Beds"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.bedrooms}
                   />
                   <label htmlFor="bedrooms">Beds</label>
                 </div>
@@ -234,6 +321,8 @@ function AddProperty() {
                     max="10"
                     placeholder="Baths"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.bathrooms}
                   />
                   <label htmlFor="bathrooms">Baths</label>
                 </div>
@@ -243,10 +332,12 @@ function AddProperty() {
                     type="number"
                     id="regularPrice"
                     name="regularPrice"
-                    min="1"
+                    min="50"
                     max="10000000"
                     placeholder="Regular Price"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.regularPrice}
                   />
                   <div className="flex flex-col items-center">
                     <label htmlFor="regularPrice">Regular Price</label>
@@ -259,10 +350,12 @@ function AddProperty() {
                     type="number"
                     id="discountPrice"
                     name="discountPrice"
-                    min="1"
+                    min="50"
                     max="10000000"
                     placeholder="Discount Price"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
+                    value={formData.discountPrice}
                   />
                   <div className="flex flex-col items-center">
                     <label htmlFor="diacountPrice">Discount Price</label>
@@ -292,7 +385,7 @@ function AddProperty() {
                   onClick={handleImageSubmit}
                   className="p-3 bg-blue-600 rounded-lg uppercase hover:bg-yellow-500 text-white "
                 >
-                  {uploading ? 'Uploading...' : 'Upload'}
+                  {uploading ? "Uploading..." : "Upload"}
                 </button>
               </div>
               <p className="text-red-600 text-sm">
@@ -300,12 +393,29 @@ function AddProperty() {
               </p>
               {formData.imageUrls.length > 0 &&
                 formData.imageUrls.map((url, index) => (
-                  <div key={url} className="flex justify-between p-3 border items-center">
-                    <img src={url} alt="Listing Image" className="w-20 h-20 object-contain rounded-lg" />
-                    <button type="button" onClick={() =>handleRemoveImage(index)} className="p-3 bg-red-500 text-white hover:bg-gray-600 rounded-lg uppercase">Delete</button>
+                  <div
+                    key={url}
+                    className="flex justify-between p-3 items-center"
+                  >
+                    <img
+                      src={url}
+                      alt="Listing Image"
+                      className="w-20 h-20 object-contain rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="p-3 bg-red-500 text-white hover:bg-gray-600 rounded-lg uppercase"
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
-              <button className="p-3 bg-black text-white rounded-lg uppercase hover:bg-slate-700">
+
+              <button
+                type="submit"
+                className="p-3 bg-black text-white rounded-lg uppercase hover:bg-slate-700"
+              >
                 Add Property
               </button>
             </div>
