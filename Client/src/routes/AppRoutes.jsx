@@ -10,6 +10,8 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import AddProperty from '../pages/AddProperty'
 import Listing from '../pages/Listing'
+import Properties from '../pages/Properties'
+
 
 function AppRoutes() {
   return (
@@ -21,6 +23,7 @@ function AppRoutes() {
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/about' element={<About />} />
+        <Route path='/properties' element={<Properties/>} />
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/add-property' element={<AddProperty />} />

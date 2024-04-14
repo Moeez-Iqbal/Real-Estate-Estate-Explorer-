@@ -11,7 +11,7 @@ import { app } from "../firebase";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 function AddProperty() {
   const [files, setFiles] = useState([]);
@@ -156,7 +156,7 @@ function AddProperty() {
     try {
       const response = await axios.post("http://localhost:3000/list", {
         ...formData,
-        userRef: currentUser.user.id, // Assuming currentUser is an object containing id
+        userRef: currentUser.user.id, 
       });
 
       setLoading(false);
@@ -189,6 +189,20 @@ function AddProperty() {
         {({ isSubmitting }) => (
           <Form className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col gap-4 flex-1">
+                
+            {/* <div style={{ height: "400px", width: "100%" }}>
+                <LoadScript googleMapsApiKey="AIzaSyDkiEddyfclww6uvxMK0zLOC2jBmpY_-i0">
+                  <GoogleMap
+                    center={{ lat: 30.3753, lng: 69.3451 }} 
+                    zoom={5} 
+                  >
+                    <Marker position={{ lat: 30.3753, lng: 69.3451 }} />
+                  </GoogleMap>
+                </LoadScript>
+              </div> */}
+
+
+
               <Field
                 type="text"
                 placeholder="Name"
@@ -418,8 +432,10 @@ function AddProperty() {
               >
                 Add Property
               </button>
+             
             </div>
           </Form>
+        
         )}
       </Formik>
     </main>
