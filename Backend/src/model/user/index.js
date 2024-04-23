@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../db/config.js";
+import ListingModel from "../Listings/index.js";
 
 const UserModel = sequelize.define (
     "User",
@@ -24,5 +25,7 @@ const UserModel = sequelize.define (
    
     {paranoid: true}
 );
+
+
 
 export default UserModel;

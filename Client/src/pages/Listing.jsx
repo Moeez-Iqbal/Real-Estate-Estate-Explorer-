@@ -7,6 +7,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 function Listing() {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
@@ -23,6 +24,10 @@ function Listing() {
 
     fetchListing();
   }, [id]);
+
+  const handleSendMessage = () => {
+  
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -53,6 +58,20 @@ function Listing() {
             <p className="text-gray-600 mb-2">Offer: {listing.offer ? "Yes" : "No"}</p>
             <p className="text-gray-600 mb-2">Parking: {listing.parking ? "Yes" : "No"}</p>
             <p className="text-gray-600 mb-2">Furnished: {listing.furnished ? "Yes" : "No"}</p>
+          </div>
+          <div className="p-6">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="w-full h-24 p-2 border border-gray-300 rounded-md resize-none mb-4"
+            ></textarea>
+            <button
+              onClick={handleSendMessage}
+              className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+            >
+              Send Message to Owner
+            </button>
           </div>
         </div>
       ) : (

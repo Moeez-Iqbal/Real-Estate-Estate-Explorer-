@@ -26,6 +26,7 @@ import { NavLink } from "react-router-dom";
 
 function Profile() {
   const currentUser = useSelector((state) => state.user.currentUser);
+  const [submitting, setSubmitting] = useState(false)
   const fileRef = useRef(null);
   const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(0);
@@ -164,7 +165,6 @@ function Profile() {
             />
             <img
               src={
-                formData.avatar ||
                 currentUser.user.avatar ||
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
               }
