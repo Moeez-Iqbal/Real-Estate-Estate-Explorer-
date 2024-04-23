@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-import back from "../assets/Back.jpg";
+import SignupImage from "../assets/Signup.jpg";
 
 const Home = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -10,7 +10,7 @@ const Home = () => {
     <div className="relative">
       <div
         className="absolute top-0 left-0 w-full h-60 bg-cover bg-center"
-        style={{ backgroundImage: `url(${back})` }}
+        style={{ backgroundImage: `url(${SignupImage})` }}
       />
       <div className="flex flex-col items-center justify-center h-screen pt-20 bg-gray-300">
         <h1 className="text-4xl font-bold mb-8">Welcome to Estate Explorer</h1>
