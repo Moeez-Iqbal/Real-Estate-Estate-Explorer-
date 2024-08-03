@@ -1,5 +1,5 @@
 import UserModel from "../../model/user/index.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 const userController = {
     update: async (req, res) => {
@@ -22,7 +22,7 @@ const userController = {
             if (email) user.email = email;
             if (password) {
                 const saltRounds = 10;
-                const hashedPassword = await bcrypt.hash(password, saltRounds);
+                const hashedPassword = await bcryptjs.hash(password, saltRounds);
                 user.password = hashedPassword;
             }
             if(avatar) user.avatar = avatar;

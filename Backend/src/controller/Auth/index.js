@@ -1,13 +1,13 @@
 import UserModel from "../../model/user/index.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 const authController = {
   SignUp: async (req, res) => {
     try {
       const payload = req.body;
       const saltRounds = 10;
-      const hPassword = await bcrypt.hash(payload.password, saltRounds);
+      const hPassword = await bcryptjs.hash(payload.password, saltRounds);
 
       const user = await UserModel.create({
         username: payload.username,
@@ -36,7 +36,7 @@ const authController = {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const result = await bcrypt.compare(payload.password, user.password);
+      const result = await bcryptjs.compare(payload.password, user.password);
 
       if (!result) {
         return res.status(401).json({ message: "Invalid credentials" });
