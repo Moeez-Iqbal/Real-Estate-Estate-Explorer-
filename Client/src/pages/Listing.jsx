@@ -72,6 +72,7 @@ function Listing() {
             >
               Send Message to Owner
             </button>
+            <a className="bg-blue-500 text-white py-3 px-4  rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ml-5 " href="mailto:">Mail To Owner</a>
           </div>
         </div>
       ) : (

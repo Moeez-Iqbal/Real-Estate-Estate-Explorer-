@@ -58,4 +58,5 @@ const ListingModel = sequelize.define('Listing', {
   timestamps: true,
 });
 
+
 export default ListingModel;
